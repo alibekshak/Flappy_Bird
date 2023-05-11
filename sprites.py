@@ -15,12 +15,12 @@ class Background(pygame.sprite.Sprite):
         self.image.blit(full_size,(0,0))
         self.image.blit(full_size,(full_width,0))
 
-        self.rect = self.image.get_rect(topleft = (0, 0))
+        self.rect = self.image.get_rect(topleft = (0,0))
         self.position = pygame.math.Vector2(self.rect.topleft)
 
     def update(self, dt):
         self.position.x -= 300 * dt
-        if self.rect.right <= 0:
+        if self.rect.centerx <= 0:
             self.position.x = 0
         self.rect.x = round(self.position.x)
 
@@ -62,12 +62,17 @@ class Plane(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(self.rect.topleft)
     
         # movement
-        self.gravity = 600
+        self.gravity = 550
         self.direction = 0
 
         # mask - использует 1 бит на пиксель для хранения, какие части сталкиваются.
         self.mask = pygame.mask.from_surface(self.image)
-    
+
+        # sound
+        self.wing_sound = pygame.mixer.Sound("assets/audio/wing.wav")
+        self.wing_sound.set_volume(0.4)
+
+
     def import_frames(self, scale_factor):
         self.frames = []
         for i in range(3):
@@ -81,6 +86,7 @@ class Plane(pygame.sprite.Sprite):
         self.rect.y = round(self.position.y)
 
     def jump(self):
+        self.wing_sound.play()
         self.direction = -400
 
     def animation(self, dt):

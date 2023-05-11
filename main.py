@@ -40,6 +40,10 @@ class FlappyBird:
         self.menu_surf = pygame.image.load("assets/sprites/message.png").convert_alpha()
         self.menu_rect = self.menu_surf.get_rect(center = (WIDTH / 2, HEIGHT / 2))
 
+        # music
+        self.music = pygame.mixer.Sound("assets/audio/Ghostrifter-Official-Subtle-Break.wav")
+        self.music.play(loops= -1) # указываем что музыка будет повторятся бесконечно
+
     def collisions(self):
         if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False, pygame.sprite.collide_mask)\
             or self.plane.rect.top <= 0:
@@ -94,7 +98,7 @@ class FlappyBird:
                     Obstacle([self.all_sprites, self.collision_sprites], self.scale_factor)
 
             # logic of game
-            self.display_face.fill('black')
+            self.display_face.fill('blue')
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_face)
             self.score_display()
