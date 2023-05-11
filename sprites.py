@@ -1,4 +1,5 @@
 
+from typing import Any
 import pygame
 from settings import *
 
@@ -41,4 +42,33 @@ class Ground(pygame.sprite.Sprite):
             self.position.x = 0
 
         self.rect.x = round(self.position.x)
-        
+
+
+class Plane(pygame.sprite.Sprite):
+    def __init__(self, groups, sclae_factor):
+        super().__init__(groups)
+
+        self.import_frames(sclae_factor)
+        self.frame_index = 0
+        self.image = self.frames[self.frame_index]
+
+        #rect
+        self.rect =self.image.get_rect(midleft =(WIDTH / 20, HEIGHT / 2))
+        self.position = pygame.math.Vector2(self.rect.toplesft)
+    
+        # movment
+        self.gtavity = 20
+        self.direction = 0
+    
+    def import_frames(self, scale_factor):
+        self.frames = []
+        for i in range(3):
+            surf = pygame.image.load(f"assets/sprites/redbird{i}.png").convert_alpha()
+            scale_surface = pygame.transform.scale(surf, pygame.math.Vector2(surf.get_size()) * scale_factor)
+            self.frames.append(scale_surface)
+
+    def gravity(self, dt):
+        self.direction +
+
+    def update(self, dt):
+        self.gravity(dt)

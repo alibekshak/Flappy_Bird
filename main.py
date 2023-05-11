@@ -19,7 +19,7 @@
 import pygame
 import sys
 import time
-from sprites import Background, Ground
+from sprites import Background, Ground, Plane
 from settings import *
 
 
@@ -41,6 +41,7 @@ class FlappyBird:
         # setup sprite
         Background(self.all_sprites, self.scale_factor)
         Ground(self.all_sprites, self.scale_factor)
+        Plane(self.all_sprites, self.scale_factor)
         
     def run(self):
         last_time = time.time()
