@@ -15,7 +15,7 @@
 # gameScreen.fill((0,0,255))
 # pygame.display.flip()
 
-
+from pygame.locals import *
 import pygame
 import sys
 import time
@@ -41,7 +41,7 @@ class FlappyBird:
         # setup sprite
         Background(self.all_sprites, self.scale_factor)
         Ground(self.all_sprites, self.scale_factor)
-        Plane(self.all_sprites, self.scale_factor)
+        self.plane = Plane(self.all_sprites, self.scale_factor)
         
     def run(self):
         last_time = time.time()
@@ -56,12 +56,21 @@ class FlappyBird:
                     pygame.quit()
                     sys.exit()
 
+                if event.type == pygame.KEYDOWN:  # команда для  использования  пробела
+                    if event.key == pygame.K_SPACE:
+                            self.plane.jump()
+
+                elif event.type == pygame.MOUSEBUTTONDOWN: # команда для  использования мышки
+                    self.plane.jump()
+                    
+
+            pygame.display.update()
             # logic of game
             self.display_face.fill('black')
             self.all_sprites.update(dt)
+            
             self.all_sprites.draw(self.display_face)
 
-            pygame.display.update()
             self.clock.tick(FPS)
 
 if __name__ == '__main__':
