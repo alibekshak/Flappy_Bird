@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-from random import choice
+from random import choice, randint
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, groups, scale_factor):
@@ -34,6 +34,9 @@ class Ground(pygame.sprite.Sprite):
         # position
         self.rect = self.image.get_rect(bottomleft = (0, HEIGHT))
         self.position = pygame.math.Vector2(self.rect.topleft)
+
+        # mask - использует 1 бит на пиксель для хранения, какие части сталкиваются.
+        self.mask = 
 
     def update(self, dt):   
         self.position.x -= 300 * dt
@@ -91,15 +94,27 @@ class Plane(pygame.sprite.Sprite):
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, groups, scale_facftor):
-        super.__init__(groups)
+        super().__init__(groups)
 
         orientation = choice(("up", "down"))
-        surf = pygame.image.load(f"").convert_alpha()
+        surf = pygame.image.load(f"assets/sprites/pipe{choice((0, 1))}.png").convert_alpha()
         self.image = pygame.transform.scale(surf,pygame.math.Vector2(surf.get_size()) * scale_facftor)
 
+        x = WIDTH + randint(40, 100)
+
         if orientation == "up":
-            
+            y = HEIGHT + randint(10, 50)
+            self.rect =self.image.get_rect(midbottom = ((x, y)))
         else:
+            y = randint(-50, -10)
             self.image = pygame.transform.flip(self.image, False, True)
-            self.rect =self.image.get_rect()
+            self.rect =self.image.get_rect(midtop = ((x, y)))
+
+        self.position = pygame.math.Vector2(self.rect.topleft)
+
+    def update(self, dt):
+        self.position.x -= 400 * dt
+        self.rect.x = round(self.position.x)
+        if self.rect.right <= -100:
+            self.kill()
         

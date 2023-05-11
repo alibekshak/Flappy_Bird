@@ -1,25 +1,8 @@
-# import pygame
-
-# pygame.init()
-# # Окно игры: размер, позиция
-# gameScreen = pygame.display.set_mode((400, 300))
-# # Модуль os - позиция окна
-# import os
-# x = 100
-# y = 100
-# os.environ['Sp_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
-# # Параметры окна
-# size = [500, 500]
-# screen = pygame.display.set_mode(size)
-# pygame.display.set_caption("Test drawings")
-# gameScreen.fill((0,0,255))
-# pygame.display.flip()
-
 from pygame.locals import *
 import pygame
 import sys
 import time
-from sprites import Background, Ground, Plane
+from sprites import Background, Ground, Plane, Obstacle
 from settings import *
 
 
@@ -40,9 +23,19 @@ class FlappyBird:
         
         # setup sprite
         Background(self.all_sprites, self.scale_factor)
-        Ground(self.all_sprites, self.scale_factor)
+        Ground([self.all_sprites, self.collision_sprites], self.scale_factor)
         self.plane = Plane(self.all_sprites, self.scale_factor)
         
+        #time
+        self.obstacle_timer = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.obstacle_timer,1400)
+
+    def collisions(self):
+        if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False):
+            pygame.quit()
+            sys.exit()
+
+
     def run(self):
         last_time = time.time()
         while True:
@@ -59,16 +52,17 @@ class FlappyBird:
                 if event.type == pygame.KEYDOWN:  # команда для  использования  пробела
                     if event.key == pygame.K_SPACE:
                             self.plane.jump()
-
                 elif event.type == pygame.MOUSEBUTTONDOWN: # команда для  использования мышки
                     self.plane.jump()
-                    
+                
+                if event.type == self.obstacle_timer:
+                    Obstacle([self.all_sprites, self.collision_sprites], self.scale_factor)
 
-            pygame.display.update()
+            pygame.display.update() 
             # logic of game
             self.display_face.fill('black')
             self.all_sprites.update(dt)
-            
+            self.collisions()
             self.all_sprites.draw(self.display_face)
 
             self.clock.tick(FPS)
