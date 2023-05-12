@@ -44,6 +44,30 @@ class FlappyBird:
         self.music = pygame.mixer.Sound("assets/audio/Ghostrifter-Official-Subtle-Break.wav")
         self.music.play(loops= -1) # указываем что музыка будет повторятся бесконечно
 
+        # save score
+        self.high_scores = []
+        self.load_high_scores()
+
+    def load_high_scores(self):
+        try:
+            with open("leaderboard.txt", "r") as file:
+                scores = file.readlines()
+                self.high_scores = [int(score.strip()) for score in scores]
+        except FileNotFoundError:
+            self.high_scores = []
+
+    def save_high_scores(self):
+        with open("leaderboard.txt", "w") as file:
+            for score in self.high_scores:
+                file.write(str(score) + "\n")
+
+    def update_high_scores(self):
+        if self.score > 0:
+            self.high_scores.append(self.score)
+            self.high_scores.sort(reverse=True)
+            self.high_scores = self.high_scores[:1]  # Keep only the top 1 scores
+            self.save_high_scores()
+
     def collisions(self):
         if pygame.sprite.spritecollide(self.plane, self.collision_sprites, False, pygame.sprite.collide_mask)\
             or self.plane.rect.top <= 0:
@@ -63,6 +87,19 @@ class FlappyBird:
         score_surf = self.font.render(str(self.score), True, 'black')
         score_rect = score_surf.get_rect(midtop = (WIDTH / 2, y))
         self.display_face.blit(score_surf, score_rect)
+
+        
+    def draw_leaderboard(self):
+        leaderboard_text = self.font.render("Top one", True, 'black')
+        leaderboard_rect = leaderboard_text.get_rect(midtop=(WIDTH / 2, HEIGHT / 2 - 300))
+        self.display_face.blit(leaderboard_text, leaderboard_rect)
+
+        y = HEIGHT / 2 - 250
+        for i, score in enumerate(self.high_scores):
+            score_text = self.font.render(f"{i+1}. {score}", True, 'black')
+            score_rect = score_text.get_rect(midtop=(WIDTH / 2, y))
+            self.display_face.blit(score_text, score_rect)
+            y += 250
 
     def run(self):
         last_time = time.time()
@@ -107,6 +144,8 @@ class FlappyBird:
                 self.collisions()
             else:
                 self.display_face.blit(self.menu_surf, self.menu_rect)
+                self.update_high_scores()
+                self.draw_leaderboard()
 
             pygame.display.update() 
             self.clock.tick(FPS)

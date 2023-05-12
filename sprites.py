@@ -87,7 +87,7 @@ class Plane(pygame.sprite.Sprite):
 
     def jump(self):
         self.wing_sound.play()
-        self.direction = -400
+        self.direction = -340
 
     def animation(self, dt):
         self.frame_index += 10 * dt
@@ -116,13 +116,13 @@ class Obstacle(pygame.sprite.Sprite):
         surf = pygame.image.load(f"assets/sprites/pipe{choice((0, 1))}.png").convert_alpha()
         self.image = pygame.transform.scale(surf,pygame.math.Vector2(surf.get_size()) * scale_facftor)
 
-        x = WIDTH + randint(40, 100)
+        x = WIDTH + randint(45, 90)
 
         if orientation == "up":
-            y = HEIGHT + randint(10, 50)
+            y = HEIGHT + randint(50, 125)
             self.rect =self.image.get_rect(midbottom = ((x, y)))
         else:
-            y = randint(-50, -10)
+            y = randint(-125, -55)
             self.image = pygame.transform.flip(self.image, False, True)
             self.rect =self.image.get_rect(midtop = ((x, y)))
 
